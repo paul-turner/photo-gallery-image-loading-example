@@ -80,10 +80,28 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position) {
             GalleryItem galleryItem = mGalleryItems.get(position);
-            Picasso.with(getContext())
-                    .load(galleryItem.getUrl())
-                    .placeholder(R.drawable.bill_up_close)
-                    .into(photoHolder.mItemImageView);
+
+            switch (position % 3) {
+                case 0:
+                    Picasso.with(getContext())
+                            .load(galleryItem.getUrl())
+                            .placeholder(R.drawable.bill_up_close)
+                            .into(photoHolder.mItemImageView);
+                    break;
+                case 1:
+                    GlideApp.with(getContext())
+                            .load(galleryItem.getUrl())
+                            .placeholder(R.drawable.bill_up_close)
+                            .into(photoHolder.mItemImageView);
+                    break;
+                case 2:
+                    Picasso.with(getContext())
+                            .load(galleryItem.getUrl())
+                            .placeholder(R.drawable.bill_up_close)
+                            .into(photoHolder.mItemImageView);
+                    break;
+            }
+
         }
 
         @Override
