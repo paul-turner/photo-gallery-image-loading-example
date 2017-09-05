@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -53,11 +54,16 @@ public class PhotoGalleryFragment extends Fragment {
 
     private class PhotoHolder extends RecyclerView.ViewHolder {
         private ImageView mItemImageView;
+        private SimpleDraweeView mItemDraweeView;
 
-        public PhotoHolder(View itemView) {
+        public PhotoHolder(View itemView, int viewType) {
             super(itemView);
 
-            mItemImageView = itemView.findViewById(R.id.item_image_view);
+            if (viewType == R.layout.list_item_gallery) {
+                mItemImageView = itemView.findViewById(R.id.item_image_view);
+            } else {
+                mItemDraweeView = itemView.findViewById(R.id.simple_drawee_view);
+            }
         }
 
     }
@@ -73,8 +79,20 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.list_item_gallery, viewGroup, false);
-            return new PhotoHolder(view);
+            View view = inflater.inflate(viewType, viewGroup, false);
+            return new PhotoHolder(view, viewType);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            switch (position % 3) {
+                default:
+                case 0:
+                case 1:
+                    return R.layout.list_item_gallery;
+                case 2:
+                    return R.layout.list_item_gallery_fresco;
+            }
         }
 
         @Override
@@ -95,10 +113,7 @@ public class PhotoGalleryFragment extends Fragment {
                             .into(photoHolder.mItemImageView);
                     break;
                 case 2:
-                    Picasso.with(getContext())
-                            .load(galleryItem.getUrl())
-                            .placeholder(R.drawable.bill_up_close)
-                            .into(photoHolder.mItemImageView);
+                    photoHolder.mItemDraweeView.setImageURI(galleryItem.getUrl());
                     break;
             }
 
